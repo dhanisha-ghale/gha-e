@@ -1,4 +1,5 @@
-import base64
+import random
+import string
 from cryptography.fernet import Fernet
 from cryptography.fernet import InvalidToken
 from cryptography.exceptions import InvalidKey
@@ -26,11 +27,8 @@ def encrypt_message(message):
     try:
         # Convert the message to a bytes object
         message_bytes = message.encode()
-        # Read the key from the file
         key = load_key()
-        # Create a Fernet object with the key
         f = Fernet(key)
-        # Encrypt the message
         encrypted_message = f.encrypt(message_bytes)
         return encrypted_message
     except InvalidKey as e:
@@ -51,12 +49,21 @@ def decrypt_message(encrypted_message):
         print("Error: Invalid token. {}".format(e))
         return None
 
+def custom_encode(bytes_data):
+    symbols = string.ascii_letters + string.digits + "!@#$%^&*()_+[]{}|;:,.<>?/"
+    return ''.join(random.choice(symbols) for _ in range(10))
+
 # Example usage
 message = input("Enter a message to encrypt: ")
 encrypted_message = encrypt_message(message)
 if encrypted_message:
-    print("Encrypted message:", encrypted_message)
+    custom_encoded_encrypted_message = custom_encode(encrypted_message)
+    
+    print("Encrypted message:", custom_encoded_encrypted_message)
+
     decrypted_message = decrypt_message(encrypted_message)
     print("Decrypted message:", decrypted_message)
 else:
     print("Failed to encrypt the message.")
+
+    
